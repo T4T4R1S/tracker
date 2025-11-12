@@ -1,0 +1,2051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cybersecurity Learning Path - Smart Review System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --blue-600: #2563eb;
+            --purple-600: #9333ea;
+            --red-600: #dc2626;
+            --green-600: #16a34a;
+            --cyan-600: #0891b2;
+            --indigo-600: #4f46e5;
+            --orange-500: #f97316;
+            --yellow-500: #eab308;
+            --pink-600: #db2777;
+            --gray-900: #111827;
+            --gray-800: #1f2937;
+            --gray-700: #374151;
+            --gray-600: #4b5563;
+            --gray-500: #6b7280;
+            --gray-400: #9ca3af;
+            --gray-300: #d1d5db;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(to bottom right, var(--gray-900), var(--gray-800), var(--gray-900));
+            color: white;
+            min-height: 100vh;
+            padding: 16px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .header h1 {
+            font-size: 2.25rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+            background: linear-gradient(to right, #ef4444, #a855f7, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: var(--gray-400);
+            font-size: 0.875rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            border: 1px solid;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-card.streak {
+            background: linear-gradient(to bottom right, #581c87, #6b21a8);
+            border-color: var(--purple-600);
+        }
+
+        .stat-card.weekly {
+            background: linear-gradient(to bottom right, #155e75, #0e7490);
+            border-color: var(--cyan-600);
+        }
+
+        .stat-card.time {
+            background: linear-gradient(to bottom right, #831843, #9d174d);
+            border-color: var(--pink-600);
+        }
+
+        .stat-card.review {
+            background: linear-gradient(to bottom right, #854d0e, #a16207);
+            border-color: var(--yellow-500);
+        }
+
+        .stat-card.review.has-reviews {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); }
+            50% { box-shadow: 0 10px 25px 0px rgba(234, 179, 8, 0.5); }
+        }
+
+        .stat-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .stat-card-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: bold;
+        }
+
+        .stat-card-value {
+            font-size: 1.875rem;
+            font-weight: bold;
+        }
+
+        .stat-card-desc {
+            font-size: 0.75rem;
+            color: var(--gray-300);
+        }
+
+        .tabs {
+            display: flex;
+            background: var(--gray-800);
+            border-radius: 8px;
+            padding: 4px;
+            margin-bottom: 24px;
+            border: 1px solid var(--gray-700);
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s;
+            font-weight: 600;
+            min-width: 120px;
+        }
+
+        .tab.active {
+            background: var(--purple-600);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .progress-card {
+            background-color: var(--gray-800);
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--gray-700);
+            margin-bottom: 24px;
+        }
+
+        .progress-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .progress-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .progress-title {
+            font-size: 1.125rem;
+            font-weight: bold;
+        }
+
+        .progress-subtitle {
+            color: var(--gray-400);
+            font-size: 0.75rem;
+        }
+
+        .progress-percentage {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #06b6d4;
+        }
+
+        .progress-bar {
+            width: 100%;
+            background-color: var(--gray-700);
+            border-radius: 9999px;
+            height: 12px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 9999px;
+            transition: width 0.5s;
+        }
+
+        .phases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .phase-button {
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px solid;
+            transition: all 0.3s;
+            cursor: pointer;
+            text-align: center;
+            position: relative;
+        }
+
+        .phase-button:hover {
+            transform: scale(1.05);
+        }
+
+        .phase-button.active {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+        }
+
+        .phase-icon {
+            font-size: 1.5rem;
+            margin-bottom: 4px;
+        }
+
+        .phase-name {
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .phase-percentage {
+            font-size: 0.75rem;
+            color: var(--gray-400);
+        }
+
+        .phase-time {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+            margin-top: 4px;
+        }
+
+        .phase-actions {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            display: flex;
+            gap: 4px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .phase-button:hover .phase-actions {
+            opacity: 1;
+        }
+
+        .btn-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .btn-icon:hover {
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        .phase-section {
+            background-color: var(--gray-800);
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--gray-700);
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .phase-section:hover {
+            border-color: var(--gray-600);
+        }
+
+        .section-header {
+            padding: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: background-color 0.3s;
+        }
+
+        .section-header:hover {
+            background-color: rgba(55, 65, 81, 0.5);
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: bold;
+            font-size: 0.875rem;
+        }
+
+        .section-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .section-content {
+            padding: 12px;
+            padding-top: 0;
+        }
+
+        .module {
+            background-color: rgba(55, 65, 81, 0.5);
+            border-radius: 8px;
+            padding: 8px;
+            margin-bottom: 8px;
+        }
+
+        .module-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .module-header:hover {
+            background-color: var(--gray-700);
+        }
+
+        .module-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+
+        .module-progress {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .module-percentage {
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: #06b6d4;
+        }
+
+        .module-items {
+            margin-top: 8px;
+            padding-left: 12px;
+        }
+
+        .module-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+            font-size: 0.75rem;
+        }
+
+        .module-item:hover {
+            background-color: var(--gray-700);
+        }
+
+        .item-checkbox {
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        .item-text {
+            flex: 1;
+        }
+
+        .item-actions {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .module-item:hover .item-actions {
+            opacity: 1;
+        }
+
+        .item-button {
+            padding: 4px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            background: none;
+            border: none;
+            color: var(--gray-400);
+        }
+
+        .item-button.note.has-note {
+            color: var(--yellow-500);
+        }
+
+        .item-button.delete {
+            color: #f87171;
+        }
+
+        .item-button:hover {
+            background-color: var(--gray-600);
+        }
+
+        .completed {
+            text-decoration: line-through;
+            color: var(--gray-500);
+        }
+
+        .review-item {
+            background-color: var(--gray-800);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid var(--gray-700);
+            transition: all 0.3s;
+        }
+
+        .review-item.due-today {
+            border-color: var(--yellow-500);
+            background: linear-gradient(to right, rgba(234, 179, 8, 0.1), transparent);
+        }
+
+        .review-item.overdue {
+            border-color: var(--red-600);
+            background: linear-gradient(to right, rgba(220, 38, 38, 0.1), transparent);
+        }
+
+        .review-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 12px;
+        }
+
+        .review-item-title {
+            font-weight: bold;
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+
+        .review-item-path {
+            font-size: 0.75rem;
+            color: var(--gray-400);
+        }
+
+        .review-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .review-badge.today {
+            background: var(--yellow-500);
+            color: var(--gray-900);
+        }
+
+        .review-badge.overdue {
+            background: var(--red-600);
+            color: white;
+        }
+
+        .review-badge.upcoming {
+            background: var(--gray-700);
+            color: var(--gray-300);
+        }
+
+        .review-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .review-btn {
+            flex: 1;
+            padding: 8px;
+            border-radius: 6px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.875rem;
+        }
+
+        .review-btn.easy {
+            background: var(--green-600);
+            color: white;
+        }
+
+        .review-btn.easy:hover {
+            background: #15803d;
+        }
+
+        .review-btn.medium {
+            background: var(--yellow-500);
+            color: var(--gray-900);
+        }
+
+        .review-btn.medium:hover {
+            background: #ca8a04;
+        }
+
+        .review-btn.hard {
+            background: var(--red-600);
+            color: white;
+        }
+
+        .review-btn.hard:hover {
+            background: #b91c1c;
+        }
+
+        .review-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .review-stat-card {
+            background: var(--gray-800);
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid var(--gray-700);
+        }
+
+        .review-stat-title {
+            font-size: 0.875rem;
+            color: var(--gray-400);
+            margin-bottom: 8px;
+        }
+
+        .review-stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            z-index: 50;
+        }
+
+        .modal-content {
+            background-color: var(--gray-800);
+            border-radius: 8px;
+            padding: 24px;
+            max-width: 640px;
+            width: 100%;
+            border: 1px solid var(--gray-700);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--gray-300);
+        }
+
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            background-color: var(--gray-900);
+            border: 1px solid var(--gray-600);
+            border-radius: 8px;
+            padding: 10px;
+            color: white;
+            font-size: 0.875rem;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--cyan-600);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-size: 0.875rem;
+        }
+
+        .btn-primary {
+            background-color: var(--cyan-600);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0e7490;
+        }
+
+        .btn-success {
+            background-color: var(--green-600);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #15803d;
+        }
+
+        .btn-danger {
+            background-color: var(--red-600);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #b91c1c;
+        }
+
+        .btn-secondary {
+            background-color: var(--gray-700);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--gray-600);
+        }
+
+        .btn-add {
+            background-color: var(--green-600);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+
+        .btn-add:hover {
+            background-color: #15803d;
+        }
+
+        .tips-card {
+            margin-top: 32px;
+            background: linear-gradient(to right, #581c87, #155e75);
+            border-radius: 8px;
+            padding: 24px;
+            border: 1px solid var(--purple-600);
+        }
+
+        .tips-title {
+            font-weight: bold;
+            font-size: 1.125rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tips-content {
+            font-size: 0.875rem;
+            color: var(--gray-300);
+            line-height: 1.6;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray-400);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 768px) {
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab {
+                min-width: auto;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .modal-content {
+                padding: 16px;
+            }
+
+            .review-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Complete Cybersecurity Learning Path</h1>
+            <p>From Zero to Professional Penetration Tester - With Smart Review System</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card streak">
+                <div class="stat-card-header">
+                    <div class="stat-card-title">
+                        <i class="fas fa-fire"></i>
+                        <span>Learning Streak</span>
+                    </div>
+                    <div class="stat-card-value" id="streak-value">0</div>
+                </div>
+                <p class="stat-card-desc">Consecutive days of learning 🔥</p>
+            </div>
+
+            <div class="stat-card weekly">
+                <div class="stat-card-header">
+                    <div class="stat-card-title">
+                        <i class="fas fa-chart-line"></i>
+                        <span>This Week</span>
+                    </div>
+                    <div class="stat-card-value" id="weekly-value">0</div>
+                </div>
+                <p class="stat-card-desc">Topics completed 📈</p>
+            </div>
+
+            <div class="stat-card time">
+                <div class="stat-card-header">
+                    <div class="stat-card-title">
+                        <i class="fas fa-calendar"></i>
+                        <span>Estimated Time</span>
+                    </div>
+                    <div class="stat-card-value" id="total-time">6-8</div>
+                </div>
+                <p class="stat-card-desc">Months to mastery 🎯</p>
+            </div>
+
+            <div class="stat-card review" id="review-card" onclick="switchTab('reviews')">
+                <div class="stat-card-header">
+                    <div class="stat-card-title">
+                        <i class="fas fa-redo"></i>
+                        <span>Reviews Due</span>
+                    </div>
+                    <div class="stat-card-value" id="reviews-due">0</div>
+                </div>
+                <p class="stat-card-desc">Items to review today 📝</p>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" data-tab="roadmap">Learning Roadmap</div>
+            <div class="tab" data-tab="reviews">Smart Reviews</div>
+            <div class="tab" data-tab="progress">Overall Progress</div>
+        </div>
+
+        <div class="tab-content active" id="roadmap-tab">
+            <button class="btn-add" id="add-phase-btn">
+                <i class="fas fa-plus"></i>
+                Add New Phase
+            </button>
+
+            <div class="progress-card">
+                <div class="progress-header">
+                    <div class="progress-info">
+                        <i class="fas fa-trophy"></i>
+                        <div>
+                            <div class="progress-title">Overall Learning Progress</div>
+                            <p class="progress-subtitle" id="total-progress-text">0 of 0</p>
+                        </div>
+                    </div>
+                    <div class="progress-percentage" id="total-percentage">0%</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="total-progress-bar" style="background: linear-gradient(to right, #ef4444, #a855f7, #06b6d4); width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="phases-grid" id="phases-grid"></div>
+
+            <div class="progress-card">
+                <div class="progress-header">
+                    <div>
+                        <div class="progress-title" id="current-phase-name">Select a Phase</div>
+                        <p class="progress-subtitle" id="current-phase-desc">Choose a phase to view details</p>
+                        <p class="progress-subtitle" id="current-phase-time"></p>
+                    </div>
+                    <div class="progress-info">
+                        <div class="progress-percentage" id="phase-percentage">0%</div>
+                        <p class="progress-subtitle" id="phase-progress-text">0/0</p>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="phase-progress-bar" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div id="sections-container"></div>
+        </div>
+
+        <div class="tab-content" id="reviews-tab">
+            <div class="progress-card">
+                <div class="progress-header">
+                    <div class="progress-info">
+                        <i class="fas fa-brain"></i>
+                        <div>
+                            <div class="progress-title">Smart Review System 🧠</div>
+                            <p class="progress-subtitle">Spaced Repetition Algorithm - Never Forget What You Learn!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="review-stats">
+                <div class="review-stat-card">
+                    <div class="review-stat-title">Due Today</div>
+                    <div class="review-stat-value" style="color: var(--yellow-500);" id="today-count">0</div>
+                </div>
+                <div class="review-stat-card">
+                    <div class="review-stat-title">Overdue</div>
+                    <div class="review-stat-value" style="color: var(--red-600);" id="overdue-count">0</div>
+                </div>
+                <div class="review-stat-card">
+                    <div class="review-stat-title">Upcoming (7 days)</div>
+                    <div class="review-stat-value" style="color: var(--cyan-600);" id="upcoming-count">0</div>
+                </div>
+                <div class="review-stat-card">
+                    <div class="review-stat-title">Total Reviews</div>
+                    <div class="review-stat-value" style="color: var(--purple-600);" id="total-reviews">0</div>
+                </div>
+            </div>
+
+            <div id="reviews-container"></div>
+        </div>
+
+        <div class="tab-content" id="progress-tab">
+            <div class="progress-card">
+                <div class="progress-header">
+                    <div class="progress-info">
+                        <i class="fas fa-road"></i>
+                        <div>
+                            <div class="progress-title">Overall Progress & Analytics</div>
+                            <p class="progress-subtitle">Comprehensive overview of your progress</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tips-card">
+                <h3 class="tips-title">
+                    <i class="fas fa-chart-pie"></i>
+                    Progress Summary
+                </h3>
+                <div class="tips-content" id="progress-summary">
+                    <p>Start learning to see your progress statistics here!</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="tips-card">
+            <h3 class="tips-title">
+                <i class="fas fa-lightbulb"></i>
+                Dashboard Features
+            </h3>
+            <div class="tips-content">
+                <p><strong>✅ What You Can Do:</strong></p>
+                <ul style="margin-left: 20px; margin-top: 8px;">
+                    <li>✏️ Edit phases by clicking the edit icon on each phase card</li>
+                    <li>🗑️ Delete phases you don't need</li>
+                    <li>➕ Add new phases with custom content</li>
+                    <li>➕ Add sections and modules to existing phases</li>
+                    <li>✅ Track your progress by checking off completed items</li>
+                    <li>📝 Add notes to any learning item</li>
+                    <li>🧠 <strong>Smart Review System automatically schedules reviews when you complete items</strong></li>
+                    <li>🔄 Review items get scheduled: Day 1 → Day 3 → Day 7 → Day 14 → Day 30</li>
+                    <li>💾 All changes are automatically saved to your browser</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal" id="note-modal" style="display: none;">
+        <div class="modal-content">
+            <h2 class="modal-title">Add/Edit Note</h2>
+            <div class="form-group">
+                <label class="form-label">Note</label>
+                <textarea class="form-textarea" id="note-textarea" placeholder="Add your notes here..."></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-primary" id="save-note-btn">Save Note</button>
+                <button class="btn btn-secondary" id="cancel-note-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="phase-modal" style="display: none;">
+        <div class="modal-content">
+            <h2 class="modal-title" id="phase-modal-title">Add New Phase</h2>
+            <div class="form-group">
+                <label class="form-label">Phase Name</label>
+                <input type="text" class="form-input" id="phase-name" placeholder="e.g., Phase 1: Fundamentals">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Description</label>
+                <input type="text" class="form-input" id="phase-desc" placeholder="Brief description">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Estimated Time</label>
+                <input type="text" class="form-input" id="phase-time" placeholder="e.g., 4-6 weeks">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Icon (emoji or FontAwesome class)</label>
+                <input type="text" class="form-input" id="phase-icon" placeholder="e.g., 🎯 or fas fa-book">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Color</label>
+                <select class="form-select" id="phase-color">
+                    <option value="blue">Blue</option>
+                    <option value="purple">Purple</option>
+                    <option value="red">Red</option>
+                    <option value="green">Green</option>
+                    <option value="cyan">Cyan</option>
+                    <option value="indigo">Indigo</option>
+                    <option value="orange">Orange</option>
+                    <option value="yellow">Yellow</option>
+                    <option value="pink">Pink</option>
+                </select>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-success" id="save-phase-btn">Save Phase</button>
+                <button class="btn btn-secondary" id="cancel-phase-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="section-modal" style="display: none;">
+        <div class="modal-content">
+            <h2 class="modal-title">Add New Section</h2>
+            <div class="form-group">
+                <label class="form-label">Section Title</label>
+                <input type="text" class="form-input" id="section-title" placeholder="e.g., Networking Fundamentals">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-success" id="save-section-btn">Add Section</button>
+                <button class="btn btn-secondary" id="cancel-section-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="module-modal" style="display: none;">
+        <div class="modal-content">
+            <h2 class="modal-title">Add New Module</h2>
+            <div class="form-group">
+                <label class="form-label">Module Title</label>
+                <input type="text" class="form-input" id="module-title" placeholder="e.g., TCP/IP Protocol">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Learning Items (one per line)</label>
+                <textarea class="form-textarea" id="module-items" placeholder="Enter each learning item on a new line..."></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-success" id="save-module-btn">Add Module</button>
+                <button class="btn btn-secondary" id="cancel-module-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="delete-confirm-modal" style="display: none;">
+        <div class="modal-content">
+            <h2 class="modal-title">Confirm Delete</h2>
+            <p style="color: var(--gray-300); margin-bottom: 20px;">Are you sure you want to delete this item? This action cannot be undone.</p>
+            <div class="modal-actions">
+                <button class="btn btn-danger" id="confirm-delete-btn">Delete</button>
+                <button class="btn btn-secondary" id="cancel-delete-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Structure
+        let learningData = {
+            phases: [],
+            reviews: [],
+            stats: {
+                streak: 0,
+                lastActivity: null,
+                weeklyCompleted: 0,
+                weekStart: null
+            }
+        };
+
+        let currentPhase = null;
+        let currentNoteItem = null;
+        let currentEditPhase = null;
+        let currentSection = null;
+        let deleteCallback = null;
+
+        // Initialize with default data
+        function initializeDefaultData() {
+            learningData = {
+                phases: [
+                    {
+                        id: 'phase1',
+                        name: 'Phase 1: Fundamentals',
+                        description: 'Master the basics',
+                        time: '4-6 weeks',
+                        icon: '🎯',
+                        color: 'blue',
+                        sections: [
+                            {
+                                id: 'sec1',
+                                title: 'Networking Basics',
+                                expanded: true,
+                                modules: [
+                                    {
+                                        id: 'mod1',
+                                        title: 'OSI Model',
+                                        expanded: false,
+                                        items: [
+                                            { id: 'item1', text: 'Understand 7 layers of OSI model', completed: false, note: '' },
+                                            { id: 'item2', text: 'Learn TCP/IP protocol suite', completed: false, note: '' },
+                                            { id: 'item3', text: 'Study network protocols (HTTP, DNS, FTP)', completed: false, note: '' }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        id: 'phase2',
+                        name: 'Phase 2: Web Security',
+                        description: 'Web vulnerabilities',
+                        time: '6-8 weeks',
+                        icon: '🌐',
+                        color: 'purple',
+                        sections: [
+                            {
+                                id: 'sec2',
+                                title: 'OWASP Top 10',
+                                expanded: true,
+                                modules: [
+                                    {
+                                        id: 'mod2',
+                                        title: 'Injection Attacks',
+                                        expanded: false,
+                                        items: [
+                                            { id: 'item4', text: 'SQL Injection basics', completed: false, note: '' },
+                                            { id: 'item5', text: 'Command injection techniques', completed: false, note: '' },
+                                            { id: 'item6', text: 'LDAP injection', completed: false, note: '' }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                reviews: [],
+                stats: {
+                    streak: 0,
+                    lastActivity: null,
+                    weeklyCompleted: 0,
+                    weekStart: new Date().toISOString()
+                }
+            };
+            saveData();
+        }
+
+        // Load data
+        function loadData() {
+            const saved = localStorage.getItem('cyberLearningData');
+            if (saved) {
+                learningData = JSON.parse(saved);
+            } else {
+                initializeDefaultData();
+            }
+            updateStreak();
+        }
+
+        // Save data
+        function saveData() {
+            localStorage.setItem('cyberLearningData', JSON.stringify(learningData));
+        }
+
+        // Update streak
+        function updateStreak() {
+            const today = new Date().toDateString();
+            const lastActivity = learningData.stats.lastActivity;
+            
+            if (!lastActivity) {
+                learningData.stats.streak = 0;
+            } else {
+                const lastDate = new Date(lastActivity).toDateString();
+                const yesterday = new Date(Date.now() - 86400000).toDateString();
+                
+                if (lastDate === today) {
+                    // Same day, keep streak
+                } else if (lastDate === yesterday) {
+                    // Continue streak
+                } else {
+                    // Reset streak
+                    learningData.stats.streak = 0;
+                }
+            }
+        }
+
+        // Update weekly stats
+        function updateWeeklyStats() {
+            const now = new Date();
+            const weekStart = learningData.stats.weekStart ? new Date(learningData.stats.weekStart) : now;
+            const daysDiff = Math.floor((now - weekStart) / (1000 * 60 * 60 * 24));
+            
+            if (daysDiff >= 7) {
+                learningData.stats.weeklyCompleted = 0;
+                learningData.stats.weekStart = now.toISOString();
+            }
+        }
+
+        // Calculate progress
+        function calculateProgress() {
+            let total = 0;
+            let completed = 0;
+            
+            learningData.phases.forEach(phase => {
+                phase.sections.forEach(section => {
+                    section.modules.forEach(module => {
+                        module.items.forEach(item => {
+                            total++;
+                            if (item.completed) completed++;
+                        });
+                    });
+                });
+            });
+            
+            return { total, completed };
+        }
+
+        // Calculate phase progress
+        function calculatePhaseProgress(phase) {
+            let total = 0;
+            let completed = 0;
+            
+            phase.sections.forEach(section => {
+                section.modules.forEach(module => {
+                    module.items.forEach(item => {
+                        total++;
+                        if (item.completed) completed++;
+                    });
+                });
+            });
+            
+            return { total, completed, percentage: total > 0 ? Math.round((completed / total) * 100) : 0 };
+        }
+
+        // Render phases grid
+        function renderPhasesGrid() {
+            const grid = document.getElementById('phases-grid');
+            grid.innerHTML = '';
+            
+            learningData.phases.forEach(phase => {
+                const progress = calculatePhaseProgress(phase);
+                const isActive = currentPhase && currentPhase.id === phase.id;
+                
+                const colorMap = {
+                    blue: { bg: 'linear-gradient(to bottom right, #1e3a8a, #1e40af)', border: '#2563eb' },
+                    purple: { bg: 'linear-gradient(to bottom right, #581c87, #6b21a8)', border: '#9333ea' },
+                    red: { bg: 'linear-gradient(to bottom right, #7f1d1d, #991b1b)', border: '#dc2626' },
+                    green: { bg: 'linear-gradient(to bottom right, #14532d, #166534)', border: '#16a34a' },
+                    cyan: { bg: 'linear-gradient(to bottom right, #155e75, #0e7490)', border: '#0891b2' },
+                    indigo: { bg: 'linear-gradient(to bottom right, #312e81, #3730a3)', border: '#4f46e5' },
+                    orange: { bg: 'linear-gradient(to bottom right, #7c2d12, #9a3412)', border: '#f97316' },
+                    yellow: { bg: 'linear-gradient(to bottom right, #713f12, #854d0e)', border: '#eab308' },
+                    pink: { bg: 'linear-gradient(to bottom right, #831843, #9d174d)', border: '#db2777' }
+                };
+                
+                const colors = colorMap[phase.color] || colorMap.blue;
+                
+                const phaseDiv = document.createElement('div');
+                phaseDiv.className = `phase-button ${isActive ? 'active' : ''}`;
+                phaseDiv.style.background = colors.bg;
+                phaseDiv.style.borderColor = colors.border;
+                phaseDiv.onclick = () => selectPhase(phase);
+                
+                phaseDiv.innerHTML = `
+                    <div class="phase-actions">
+                        <button class="btn-icon" onclick="event.stopPropagation(); editPhase('${phase.id}')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn-icon" onclick="event.stopPropagation(); deletePhase('${phase.id}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    <div class="phase-icon">${phase.icon}</div>
+                    <div class="phase-name">${phase.name}</div>
+                    <div class="phase-percentage">${progress.percentage}%</div>
+                    <div class="phase-time">${phase.time}</div>
+                `;
+                
+                grid.appendChild(phaseDiv);
+            });
+        }
+
+        // Select phase
+        function selectPhase(phase) {
+            currentPhase = phase;
+            renderPhasesGrid();
+            renderPhaseDetails();
+        }
+
+        // Render phase details
+        function renderPhaseDetails() {
+            if (!currentPhase) {
+                document.getElementById('current-phase-name').textContent = 'Select a Phase';
+                document.getElementById('current-phase-desc').textContent = 'Choose a phase to view details';
+                document.getElementById('current-phase-time').textContent = '';
+                document.getElementById('phase-percentage').textContent = '0%';
+                document.getElementById('phase-progress-text').textContent = '0/0';
+                document.getElementById('phase-progress-bar').style.width = '0%';
+                document.getElementById('sections-container').innerHTML = '';
+                return;
+            }
+            
+            const progress = calculatePhaseProgress(currentPhase);
+            const colorMap = {
+                blue: '#2563eb',
+                purple: '#9333ea',
+                red: '#dc2626',
+                green: '#16a34a',
+                cyan: '#0891b2',
+                indigo: '#4f46e5',
+                orange: '#f97316',
+                yellow: '#eab308',
+                pink: '#db2777'
+            };
+            
+            document.getElementById('current-phase-name').textContent = currentPhase.name;
+            document.getElementById('current-phase-desc').textContent = currentPhase.description;
+            document.getElementById('current-phase-time').textContent = `⏱️ ${currentPhase.time}`;
+            document.getElementById('phase-percentage').textContent = `${progress.percentage}%`;
+            document.getElementById('phase-progress-text').textContent = `${progress.completed}/${progress.total}`;
+            document.getElementById('phase-progress-bar').style.width = `${progress.percentage}%`;
+            document.getElementById('phase-progress-bar').style.background = colorMap[currentPhase.color] || colorMap.blue;
+            
+            renderSections();
+        }
+
+        // Render sections
+        function renderSections() {
+            const container = document.getElementById('sections-container');
+            container.innerHTML = '';
+            
+            if (!currentPhase || !currentPhase.sections || currentPhase.sections.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-folder-open"></i>
+                        <p>No sections yet. Add your first section!</p>
+                        <button class="btn-add" onclick="showAddSectionModal()" style="margin-top: 16px;">
+                            <i class="fas fa-plus"></i>
+                            Add Section
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            const addBtn = document.createElement('button');
+            addBtn.className = 'btn-add';
+            addBtn.onclick = showAddSectionModal;
+            addBtn.innerHTML = '<i class="fas fa-plus"></i> Add Section';
+            container.appendChild(addBtn);
+            
+            currentPhase.sections.forEach(section => {
+                const sectionDiv = document.createElement('div');
+                sectionDiv.className = 'phase-section';
+                
+                const totalItems = section.modules.reduce((sum, mod) => sum + mod.items.length, 0);
+                const completedItems = section.modules.reduce((sum, mod) => 
+                    sum + mod.items.filter(i => i.completed).length, 0);
+                
+                sectionDiv.innerHTML = `
+                    <div class="section-header" onclick="toggleSection('${section.id}')">
+                        <div class="section-title">
+                            <i class="fas fa-chevron-${section.expanded ? 'down' : 'right'}"></i>
+                            <span>${section.title}</span>
+                            <span style="color: var(--gray-400); font-size: 0.75rem;">(${completedItems}/${totalItems})</span>
+                        </div>
+                        <div class="section-actions">
+                            <button class="btn-icon" onclick="event.stopPropagation(); showAddModuleModal('${section.id}')">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <button class="btn-icon" onclick="event.stopPropagation(); deleteSection('${section.id}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                if (section.expanded) {
+                    const contentDiv = document.createElement('div');
+                    contentDiv.className = 'section-content';
+                    
+                    section.modules.forEach(module => {
+                        const moduleDiv = document.createElement('div');
+                        moduleDiv.className = 'module';
+                        
+                        const moduleCompleted = module.items.filter(i => i.completed).length;
+                        const moduleTotal = module.items.length;
+                        const modulePercentage = moduleTotal > 0 ? Math.round((moduleCompleted / moduleTotal) * 100) : 0;
+                        
+                        moduleDiv.innerHTML = `
+                            <div class="module-header" onclick="toggleModule('${section.id}', '${module.id}')">
+                                <div class="module-title">
+                                    <i class="fas fa-chevron-${module.expanded ? 'down' : 'right'}"></i>
+                                    <span>${module.title}</span>
+                                </div>
+                                <div class="module-progress">
+                                    <span class="module-percentage">${modulePercentage}%</span>
+                                    <span style="font-size: 0.75rem; color: var(--gray-400);">${moduleCompleted}/${moduleTotal}</span>
+                                    <button class="btn-icon" onclick="event.stopPropagation(); deleteModule('${section.id}', '${module.id}')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                        
+                        if (module.expanded) {
+                            const itemsDiv = document.createElement('div');
+                            itemsDiv.className = 'module-items';
+                            
+                            module.items.forEach(item => {
+                                const itemDiv = document.createElement('div');
+                                itemDiv.className = 'module-item';
+                                
+                                itemDiv.innerHTML = `
+                                    <input type="checkbox" class="item-checkbox" ${item.completed ? 'checked' : ''} 
+                                           onchange="toggleItem('${section.id}', '${module.id}', '${item.id}')">
+                                    <span class="item-text ${item.completed ? 'completed' : ''}">${item.text}</span>
+                                    <div class="item-actions">
+                                        <button class="item-button note ${item.note ? 'has-note' : ''}" 
+                                                onclick="showNoteModal('${section.id}', '${module.id}', '${item.id}')">
+                                            <i class="fas fa-sticky-note"></i>
+                                        </button>
+                                        <button class="item-button delete" 
+                                                onclick="deleteItem('${section.id}', '${module.id}', '${item.id}')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                `;
+                                
+                                itemsDiv.appendChild(itemDiv);
+                            });
+                            
+                            moduleDiv.appendChild(itemsDiv);
+                        }
+                        
+                        contentDiv.appendChild(moduleDiv);
+                    });
+                    
+                    sectionDiv.appendChild(contentDiv);
+                }
+                
+                container.appendChild(sectionDiv);
+            });
+        }
+
+        // Toggle section
+        function toggleSection(sectionId) {
+            const section = currentPhase.sections.find(s => s.id === sectionId);
+            if (section) {
+                section.expanded = !section.expanded;
+                saveData();
+                renderSections();
+            }
+        }
+
+        // Toggle module
+        function toggleModule(sectionId, moduleId) {
+            const section = currentPhase.sections.find(s => s.id === sectionId);
+            if (section) {
+                const module = section.modules.find(m => m.id === moduleId);
+                if (module) {
+                    module.expanded = !module.expanded;
+                    saveData();
+                    renderSections();
+                }
+            }
+        }
+
+        // Toggle item
+        function toggleItem(sectionId, moduleId, itemId) {
+            const section = currentPhase.sections.find(s => s.id === sectionId);
+            if (section) {
+                const module = section.modules.find(m => m.id === moduleId);
+                if (module) {
+                    const item = module.items.find(i => i.id === itemId);
+                    if (item) {
+                        item.completed = !item.completed;
+                        
+                        const today = new Date().toISOString();
+                        if (item.completed) {
+                            learningData.stats.lastActivity = today;
+                            learningData.stats.streak++;
+                            learningData.stats.weeklyCompleted++;
+                            
+                            addToReviewSystem(sectionId, moduleId, itemId, item.text);
+                        } else {
+                            removeFromReviewSystem(itemId);
+                        }
+                        
+                        updateWeeklyStats();
+                        saveData();
+                        renderAll();
+                    }
+                }
+            }
+        }
+
+        // Add to review system
+        function addToReviewSystem(sectionId, moduleId, itemId, itemText) {
+            const existingReview = learningData.reviews.find(r => r.itemId === itemId);
+            if (existingReview) {
+                existingReview.completionDate = new Date().toISOString();
+                existingReview.nextReview = calculateNextReview(0);
+                existingReview.interval = 0;
+            } else {
+                learningData.reviews.push({
+                    itemId: itemId,
+                    sectionId: sectionId,
+                    moduleId: moduleId,
+                    itemText: itemText,
+                    completionDate: new Date().toISOString(),
+                    nextReview: calculateNextReview(0),
+                    interval: 0,
+                    easeFactor: 2.5
+                });
+            }
+        }
+
+        // Calculate next review
+        function calculateNextReview(interval) {
+            const intervals = [1, 3, 7, 14, 30];
+            const nextInterval = interval < intervals.length - 1 ? intervals[interval + 1] : 30;
+            const nextDate = new Date();
+            nextDate.setDate(nextDate.getDate() + nextInterval);
+            return nextDate.toISOString();
+        }
+
+        // Remove from review
+        function removeFromReviewSystem(itemId) {
+            learningData.reviews = learningData.reviews.filter(r => r.itemId !== itemId);
+        }
+
+        // Handle review
+        function handleReview(reviewId, difficulty) {
+            const review = learningData.reviews.find(r => r.itemId === reviewId);
+            if (!review) return;
+            
+            let newInterval = review.interval;
+            
+            switch(difficulty) {
+                case 'easy':
+                    newInterval = Math.min(review.interval + 1, 4);
+                    break;
+                case 'medium':
+                    newInterval = review.interval;
+                    break;
+                case 'hard':
+                    newInterval = 0;
+                    break;
+            }
+            
+            review.interval = newInterval;
+            review.nextReview = calculateNextReview(newInterval);
+            review.completionDate = new Date().toISOString();
+            
+            saveData();
+            renderReviews();
+            updateStats();
+        }
+
+        // Render reviews
+        function renderReviews() {
+            const container = document.getElementById('reviews-container');
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            const dueToday = [];
+            const overdue = [];
+            const upcoming = [];
+            
+            learningData.reviews.forEach(review => {
+                const reviewDate = new Date(review.nextReview);
+                reviewDate.setHours(0, 0, 0, 0);
+                const diffDays = Math.floor((reviewDate - today) / (1000 * 60 * 60 * 24));
+                
+                if (diffDays < 0) {
+                    overdue.push(review);
+                } else if (diffDays === 0) {
+                    dueToday.push(review);
+                } else if (diffDays <= 7) {
+                    upcoming.push(review);
+                }
+            });
+            
+            document.getElementById('today-count').textContent = dueToday.length;
+            document.getElementById('overdue-count').textContent = overdue.length;
+            document.getElementById('upcoming-count').textContent = upcoming.length;
+            document.getElementById('total-reviews').textContent = learningData.reviews.length;
+            
+            const allReviews = [...overdue, ...dueToday, ...upcoming];
+            
+            if (allReviews.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-check-circle"></i>
+                        <p>No reviews scheduled yet!</p>
+                        <p style="margin-top: 8px;">Complete some learning items to start building your review queue.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            allReviews.forEach(review => {
+                const reviewDate = new Date(review.nextReview);
+                reviewDate.setHours(0, 0, 0, 0);
+                const diffDays = Math.floor((reviewDate - today) / (1000 * 60 * 60 * 24));
+                
+                let badgeClass = 'upcoming';
+                let badgeText = `In ${diffDays} days`;
+                let itemClass = '';
+                
+                if (diffDays < 0) {
+                    badgeClass = 'overdue';
+                    badgeText = `${Math.abs(diffDays)} days overdue`;
+                    itemClass = 'overdue';
+                } else if (diffDays === 0) {
+                    badgeClass = 'today';
+                    badgeText = 'Due Today';
+                    itemClass = 'due-today';
+                }
+                
+                let path = '';
+                for (const phase of learningData.phases) {
+                    const section = phase.sections.find(s => s.id === review.sectionId);
+                    if (section) {
+                        const module = section.modules.find(m => m.id === review.moduleId);
+                        if (module) {
+                            path = `${phase.name} > ${section.title} > ${module.title}`;
+                            break;
+                        }
+                    }
+                }
+                
+                const reviewDiv = document.createElement('div');
+                reviewDiv.className = `review-item ${itemClass}`;
+                
+                reviewDiv.innerHTML = `
+                    <div class="review-item-header">
+                        <div>
+                            <div class="review-item-title">${review.itemText}</div>
+                            <div class="review-item-path">${path}</div>
+                        </div>
+                        <div class="review-badge ${badgeClass}">${badgeText}</div>
+                    </div>
+                    <div class="review-buttons">
+                        <button class="review-btn easy" onclick="handleReview('${review.itemId}', 'easy')">
+                            <i class="fas fa-smile"></i> Easy
+                        </button>
+                        <button class="review-btn medium" onclick="handleReview('${review.itemId}', 'medium')">
+                            <i class="fas fa-meh"></i> Medium
+                        </button>
+                        <button class="review-btn hard" onclick="handleReview('${review.itemId}', 'hard')">
+                            <i class="fas fa-frown"></i> Hard
+                        </button>
+                    </div>
+                `;
+                
+                container.appendChild(reviewDiv);
+            });
+        }
+
+        // Show note modal
+        function showNoteModal(sectionId, moduleId, itemId) {
+            const section = currentPhase.sections.find(s => s.id === sectionId);
+            if (section) {
+                const module = section.modules.find(m => m.id === moduleId);
+                if (module) {
+                    const item = module.items.find(i => i.id === itemId);
+                    if (item) {
+                        currentNoteItem = { sectionId, moduleId, itemId };
+                        document.getElementById('note-textarea').value = item.note || '';
+                        document.getElementById('note-modal').style.display = 'flex';
+                    }
+                }
+            }
+        }
+
+        // Save note
+        document.getElementById('save-note-btn').onclick = function() {
+            if (!currentNoteItem) return;
+            
+            const section = currentPhase.sections.find(s => s.id === currentNoteItem.sectionId);
+            if (section) {
+                const module = section.modules.find(m => m.id === currentNoteItem.moduleId);
+                if (module) {
+                    const item = module.items.find(i => i.id === currentNoteItem.itemId);
+                    if (item) {
+                        item.note = document.getElementById('note-textarea').value;
+                        saveData();
+                        renderSections();
+                    }
+                }
+            }
+            
+            document.getElementById('note-modal').style.display = 'none';
+            currentNoteItem = null;
+        };
+
+        // Cancel note
+        document.getElementById('cancel-note-btn').onclick = function() {
+            document.getElementById('note-modal').style.display = 'none';
+            currentNoteItem = null;
+        };
+
+        // Show add phase modal
+        function showAddPhaseModal() {
+            document.getElementById('phase-modal-title').textContent = 'Add New Phase';
+            document.getElementById('phase-name').value = '';
+            document.getElementById('phase-desc').value = '';
+            document.getElementById('phase-time').value = '';
+            document.getElementById('phase-icon').value = '';
+            document.getElementById('phase-color').value = 'blue';
+            currentEditPhase = null;
+            document.getElementById('phase-modal').style.display = 'flex';
+        }
+
+        // Edit phase
+        function editPhase(phaseId) {
+            const phase = learningData.phases.find(p => p.id === phaseId);
+            if (phase) {
+                document.getElementById('phase-modal-title').textContent = 'Edit Phase';
+                document.getElementById('phase-name').value = phase.name;
+                document.getElementById('phase-desc').value = phase.description;
+                document.getElementById('phase-time').value = phase.time;
+                document.getElementById('phase-icon').value = phase.icon;
+                document.getElementById('phase-color').value = phase.color;
+                currentEditPhase = phase;
+                document.getElementById('phase-modal').style.display = 'flex';
+            }
+        }
+
+        // Save phase
+        document.getElementById('save-phase-btn').onclick = function() {
+            const name = document.getElementById('phase-name').value.trim();
+            const desc = document.getElementById('phase-desc').value.trim();
+            const time = document.getElementById('phase-time').value.trim();
+            const icon = document.getElementById('phase-icon').value.trim();
+            const color = document.getElementById('phase-color').value;
+            
+            if (!name) {
+                alert('Phase name is required');
+                return;
+            }
+            
+            if (currentEditPhase) {
+                // Update existing phase
+                currentEditPhase.name = name;
+                currentEditPhase.description = desc;
+                currentEditPhase.time = time;
+                currentEditPhase.icon = icon;
+                currentEditPhase.color = color;
+            } else {
+                // Create new phase
+                const newPhase = {
+                    id: 'phase' + Date.now(),
+                    name: name,
+                    description: desc,
+                    time: time,
+                    icon: icon,
+                    color: color,
+                    sections: []
+                };
+                learningData.phases.push(newPhase);
+            }
+            
+            saveData();
+            renderAll();
+            document.getElementById('phase-modal').style.display = 'none';
+        };
+
+        // Cancel phase
+        document.getElementById('cancel-phase-btn').onclick = function() {
+            document.getElementById('phase-modal').style.display = 'none';
+            currentEditPhase = null;
+        };
+
+        // Show add section modal
+        function showAddSectionModal() {
+            document.getElementById('section-title').value = '';
+            document.getElementById('section-modal').style.display = 'flex';
+        }
+
+        // Save section
+        document.getElementById('save-section-btn').onclick = function() {
+            const title = document.getElementById('section-title').value.trim();
+            
+            if (!title) {
+                alert('Section title is required');
+                return;
+            }
+            
+            if (!currentPhase) {
+                alert('Please select a phase first');
+                return;
+            }
+            
+            const newSection = {
+                id: 'sec' + Date.now(),
+                title: title,
+                expanded: true,
+                modules: []
+            };
+            
+            currentPhase.sections.push(newSection);
+            saveData();
+            renderSections();
+            document.getElementById('section-modal').style.display = 'none';
+        };
+
+        // Cancel section
+        document.getElementById('cancel-section-btn').onclick = function() {
+            document.getElementById('section-modal').style.display = 'none';
+        };
+
+        // Show add module modal
+        function showAddModuleModal(sectionId) {
+            currentSection = sectionId;
+            document.getElementById('module-title').value = '';
+            document.getElementById('module-items').value = '';
+            document.getElementById('module-modal').style.display = 'flex';
+        }
+
+        // Save module
+        document.getElementById('save-module-btn').onclick = function() {
+            const title = document.getElementById('module-title').value.trim();
+            const itemsText = document.getElementById('module-items').value.trim();
+            
+            if (!title) {
+                alert('Module title is required');
+                return;
+            }
+            
+            if (!currentPhase) {
+                alert('Please select a phase first');
+                return;
+            }
+            
+            const section = currentPhase.sections.find(s => s.id === currentSection);
+            if (!section) {
+                alert('Section not found');
+                return;
+            }
+            
+            const items = itemsText.split('\n')
+                .filter(item => item.trim())
+                .map(item => ({
+                    id: 'item' + Date.now() + Math.random(),
+                    text: item.trim(),
+                    completed: false,
+                    note: ''
+                }));
+            
+            const newModule = {
+                id: 'mod' + Date.now(),
+                title: title,
+                expanded: false,
+                items: items
+            };
+            
+            section.modules.push(newModule);
+            saveData();
+            renderSections();
+            document.getElementById('module-modal').style.display = 'none';
+        };
+
+        // Cancel module
+        document.getElementById('cancel-module-btn').onclick = function() {
+            document.getElementById('module-modal').style.display = 'none';
+        };
+
+        // Delete phase
+        function deletePhase(phaseId) {
+            if (confirm('Are you sure you want to delete this phase? This action cannot be undone.')) {
+                learningData.phases = learningData.phases.filter(p => p.id !== phaseId);
+                if (currentPhase && currentPhase.id === phaseId) {
+                    currentPhase = null;
+                }
+                saveData();
+                renderAll();
+            }
+        }
+
+        // Delete section
+        function deleteSection(sectionId) {
+            if (confirm('Are you sure you want to delete this section? This action cannot be undone.')) {
+                currentPhase.sections = currentPhase.sections.filter(s => s.id !== sectionId);
+                saveData();
+                renderSections();
+            }
+        }
+
+        // Delete module
+        function deleteModule(sectionId, moduleId) {
+            if (confirm('Are you sure you want to delete this module? This action cannot be undone.')) {
+                const section = currentPhase.sections.find(s => s.id === sectionId);
+                if (section) {
+                    section.modules = section.modules.filter(m => m.id !== moduleId);
+                    saveData();
+                    renderSections();
+                }
+            }
+        }
+
+        // Delete item
+        function deleteItem(sectionId, moduleId, itemId) {
+            if (confirm('Are you sure you want to delete this item? This action cannot be undone.')) {
+                const section = currentPhase.sections.find(s => s.id === sectionId);
+                if (section) {
+                    const module = section.modules.find(m => m.id === moduleId);
+                    if (module) {
+                        module.items = module.items.filter(i => i.id !== itemId);
+                        removeFromReviewSystem(itemId);
+                        saveData();
+                        renderSections();
+                    }
+                }
+            }
+        }
+
+        // Switch tab
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            document.querySelector(`.tab[data-tab="${tabName}"]`).classList.add('active');
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            
+            if (tabName === 'reviews') {
+                renderReviews();
+            } else if (tabName === 'progress') {
+                renderProgressSummary();
+            }
+        }
+
+        // Update stats
+        function updateStats() {
+            const progress = calculateProgress();
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            const dueToday = learningData.reviews.filter(review => {
+                const reviewDate = new Date(review.nextReview);
+                reviewDate.setHours(0, 0, 0, 0);
+                return reviewDate.getTime() === today.getTime();
+            });
+            
+            document.getElementById('streak-value').textContent = learningData.stats.streak;
+            document.getElementById('weekly-value').textContent = learningData.stats.weeklyCompleted;
+            document.getElementById('reviews-due').textContent = dueToday.length;
+            
+            document.getElementById('total-progress-text').textContent = `${progress.completed} of ${progress.total}`;
+            document.getElementById('total-percentage').textContent = progress.total > 0 ? `${Math.round((progress.completed / progress.total) * 100)}%` : '0%';
+            document.getElementById('total-progress-bar').style.width = progress.total > 0 ? `${(progress.completed / progress.total) * 100}%` : '0%';
+            
+            // Add animation to review card if there are reviews due
+            const reviewCard = document.getElementById('review-card');
+            if (dueToday.length > 0) {
+                reviewCard.classList.add('has-reviews');
+            } else {
+                reviewCard.classList.remove('has-reviews');
+            }
+        }
+
+        // Render progress summary
+        function renderProgressSummary() {
+            const progress = calculateProgress();
+            const container = document.getElementById('progress-summary');
+            
+            if (progress.total === 0) {
+                container.innerHTML = '<p>Start learning to see your progress statistics here!</p>';
+                return;
+            }
+            
+            const percentage = Math.round((progress.completed / progress.total) * 100);
+            
+            container.innerHTML = `
+                <p><strong>Overall Progress:</strong> ${progress.completed}/${progress.total} (${percentage}%)</p>
+                <div style="margin: 12px 0; height: 12px; background: var(--gray-700); border-radius: 6px; overflow: hidden;">
+                    <div style="height: 100%; width: ${percentage}%; background: linear-gradient(to right, #ef4444, #a855f7, #06b6d4);"></div>
+                </div>
+                <p><strong>Learning Streak:</strong> ${learningData.stats.streak} days</p>
+                <p><strong>This Week:</strong> ${learningData.stats.weeklyCompleted} topics completed</p>
+                <p><strong>Total Reviews:</strong> ${learningData.reviews.length} items in review system</p>
+                <p><strong>Phases:</strong> ${learningData.phases.length}</p>
+                <p><strong>Sections:</strong> ${learningData.phases.reduce((sum, phase) => sum + phase.sections.length, 0)}</p>
+                <p><strong>Modules:</strong> ${learningData.phases.reduce((sum, phase) => 
+                    sum + phase.sections.reduce((secSum, section) => secSum + section.modules.length, 0), 0)}</p>
+            `;
+        }
+
+        // Render all
+        function renderAll() {
+            renderPhasesGrid();
+            if (currentPhase) {
+                renderPhaseDetails();
+            } else if (learningData.phases.length > 0) {
+                selectPhase(learningData.phases[0]);
+            }
+            updateStats();
+        }
+
+        // Initialize
+        function init() {
+            loadData();
+            renderAll();
+            
+            // Set up tab switching
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    switchTab(this.getAttribute('data-tab'));
+                });
+            });
+            
+            // Set up add phase button
+            document.getElementById('add-phase-btn').addEventListener('click', showAddPhaseModal);
+            
+            // Set up modals
+            document.getElementById('cancel-phase-btn').addEventListener('click', function() {
+                document.getElementById('phase-modal').style.display = 'none';
+            });
+            
+            document.getElementById('cancel-section-btn').addEventListener('click', function() {
+                document.getElementById('section-modal').style.display = 'none';
+            });
+            
+            document.getElementById('cancel-module-btn').addEventListener('click', function() {
+                document.getElementById('module-modal').style.display = 'none';
+            });
+            
+            // Close modals when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target.classList.contains('modal')) {
+                    event.target.style.display = 'none';
+                }
+            });
+        }
+
+        // Start the application
+        init();
+    </script>
+</body>
+</html>

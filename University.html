@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flexible Study Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+
+        .stat-icon.purple { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .stat-icon.green { background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%); color: white; }
+        .stat-icon.orange { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; }
+        .stat-icon.blue { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; }
+
+        .stat-content h3 {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        .stat-content p {
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .today-reviews {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            color: white;
+            box-shadow: 0 10px 40px rgba(245, 87, 108, 0.3);
+        }
+
+        .today-reviews h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .review-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        .review-card {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.3);
+            transition: all 0.3s;
+        }
+
+        .review-card:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.02);
+        }
+
+        .review-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .review-card p {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            opacity: 0.9;
+        }
+
+        .review-btn {
+            width: 100%;
+            background: white;
+            color: #f5576c;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s;
+        }
+
+        .review-btn:hover {
+            background: #f5576c;
+            color: white;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .subjects-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .subjects-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .subjects-header h2 {
+            color: #333;
+            font-size: 1.5rem;
+        }
+
+        .add-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+        }
+
+        .add-btn:hover {
+            transform: rotate(90deg);
+        }
+
+        .subject-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .subject-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .subject-item.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .subject-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        .subject-stats {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        .delete-subject {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255,0,0,0.1);
+            color: #ff4444;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .subject-item:hover .delete-subject {
+            opacity: 1;
+        }
+
+        .subject-item.active .delete-subject {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        .content-area {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .content-header h2 {
+            color: #333;
+            font-size: 1.8rem;
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-box h4 {
+            color: #999;
+            font-size: 0.8rem;
+            margin-bottom: 5px;
+        }
+
+        .stat-box h3 {
+            color: #667eea;
+            font-size: 2rem;
+        }
+
+        .add-lecture-form {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .add-lecture-form input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            outline: none;
+            transition: border 0.3s;
+        }
+
+        .add-lecture-form input:focus {
+            border-color: #667eea;
+        }
+
+        .add-lecture-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .add-lecture-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .lectures-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .lecture-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .lecture-item:hover {
+            border-color: #667eea;
+        }
+
+        .lecture-item.due {
+            background: #fff5f5;
+            border-color: #ff6b6b;
+        }
+
+        .lecture-item.completed {
+            background: #f0fff4;
+            border-color: #51cf66;
+        }
+
+        .lecture-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .lecture-checkbox {
+            width: 30px;
+            height: 30px;
+            border: 3px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .lecture-checkbox.checked {
+            background: #51cf66;
+            border-color: #51cf66;
+            color: white;
+        }
+
+        .lecture-info {
+            flex: 1;
+        }
+
+        .lecture-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .lecture-name.completed {
+            text-decoration: line-through;
+            color: #999;
+        }
+
+        .lecture-details {
+            display: flex;
+            gap: 20px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .lecture-detail {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .lecture-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .action-btn.review {
+            background: #667eea;
+            color: white;
+        }
+
+        .action-btn.review:hover {
+            background: #5568d3;
+        }
+
+        .action-btn.review.due {
+            background: #ff6b6b;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .action-btn.delete {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .action-btn.delete:hover {
+            background: #ff5252;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            color: #999;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            outline: none;
+        }
+
+        .modal-input:focus {
+            border-color: #667eea;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .modal-btn.primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .modal-btn.secondary {
+            background: #f0f0f0;
+            color: #666;
+        }
+
+        .modal-btn:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .review-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-bar {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-graduation-cap"></i> Smart Study Tracker</h1>
+            <p>Organize your studies and track your progress smartly</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon purple">
+                    <i class="fas fa-book"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="total-subjects">0</h3>
+                    <p>Total Subjects</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="total-studied">0</h3>
+                    <p>Lectures Studied</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon orange">
+                    <i class="fas fa-sync-alt"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="total-reviews">0</h3>
+                    <p>Total Reviews</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon blue">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="due-today">0</h3>
+                    <p>Due Today</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="today-reviews" id="today-reviews" style="display: none;">
+            <h2><i class="fas fa-clock"></i> Today's Reviews (<span id="today-count">0</span>)</h2>
+            <div class="review-grid" id="review-grid"></div>
+        </div>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <div class="subjects-card">
+                    <div class="subjects-header">
+                        <h2>Subjects</h2>
+                        <button class="add-btn" onclick="openAddSubjectModal()">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                    <div id="subjects-list"></div>
+                </div>
+            </div>
+
+            <div class="content-area">
+                <div id="no-subject-selected" class="empty-state">
+                    <i class="fas fa-book-open"></i>
+                    <h2>Select a Subject</h2>
+                    <p>Choose a subject from the sidebar or add a new one to get started</p>
+                </div>
+
+                <div id="subject-content" style="display: none;">
+                    <div class="content-header">
+                        <h2 id="current-subject-name">Subject Name</h2>
+                    </div>
+
+                    <div class="stats-bar">
+                        <div class="stat-box">
+                            <h4>Total</h4>
+                            <h3 id="subject-total">0</h3>
+                        </div>
+                        <div class="stat-box">
+                            <h4>Studied</h4>
+                            <h3 id="subject-studied">0</h3>
+                        </div>
+                        <div class="stat-box">
+                            <h4>Progress</h4>
+                            <h3 id="subject-progress">0%</h3>
+                        </div>
+                        <div class="stat-box">
+                            <h4>Due Today</h4>
+                            <h3 id="subject-due">0</h3>
+                        </div>
+                    </div>
+
+                    <div class="add-lecture-form">
+                        <input type="text" id="lecture-input" placeholder="Enter lecture name..." onkeypress="handleLectureEnter(event)">
+                        <button class="add-lecture-btn" onclick="addLecture()">
+                            <i class="fas fa-plus"></i> Add Lecture
+                        </button>
+                    </div>
+
+                    <div id="lectures-list" class="lectures-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Subject Modal -->
+    <div class="modal" id="add-subject-modal">
+        <div class="modal-content">
+            <h2 class="modal-header">Add New Subject</h2>
+            <input type="text" class="modal-input" id="subject-name-input" placeholder="Enter subject name..." onkeypress="handleSubjectEnter(event)">
+            <div class="modal-actions">
+                <button class="modal-btn primary" onclick="addSubject()">Add Subject</button>
+                <button class="modal-btn secondary" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let subjects = [];
+        let selectedSubjectId = null;
+
+        // Load data from memory (using in-memory storage)
+        function loadData() {
+            const saved = sessionStorage.getItem('study-tracker-data');
+            if (saved) {
+                const data = JSON.parse(saved);
+                subjects = data.subjects || [];
+                selectedSubjectId = data.selectedSubjectId || null;
+            }
+            renderSubjects();
+            if (selectedSubjectId) {
+                selectSubject(selectedSubjectId);
+            }
+            updateGlobalStats();
+            updateTodayReviews();
+        }
+
+        // Save data to memory
+        function saveData() {
+            const data = {
+                subjects: subjects,
+                selectedSubjectId: selectedSubjectId
+            };
+            sessionStorage.setItem('study-tracker-data', JSON.stringify(data));
+        }
+
+        // Open Add Subject Modal
+        function openAddSubjectModal() {
+            document.getElementById('add-subject-modal').classList.add('active');
+            document.getElementById('subject-name-input').focus();
+        }
+
+        // Close Modal
+        function closeModal() {
+            document.getElementById('add-subject-modal').classList.remove('active');
+            document.getElementById('subject-name-input').value = '';
+        }
+
+        // Handle Enter key for subject
+        function handleSubjectEnter(event) {
+            if (event.key === 'Enter') {
+                addSubject();
+            }
+        }
+
+        // Add Subject
+        function addSubject() {
+            const input = document.getElementById('subject-name-input');
+            const name = input.value.trim();
+            
+            if (name) {
+                const newSubject = {
+                    id: Date.now(),
+                    name: name,
+                    lectures: []
+                };
+                subjects.push(newSubject);
+                saveData();
+                renderSubjects();
+                closeModal();
+                selectSubject(newSubject.id);
+            }
+        }
+
+        // Delete Subject
+        function deleteSubject(id, event) {
+            event.stopPropagation();
+            if (confirm('Are you sure you want to delete this subject and all its lectures?')) {
+                subjects = subjects.filter(s => s.id !== id);
+                if (selectedSubjectId === id) {
+                    selectedSubjectId = null;
+                    document.getElementById('subject-content').style.display = 'none';
+                    document.getElementById('no-subject-selected').style.display = 'block';
+                }
+                saveData();
+                renderSubjects();
+                updateGlobalStats();
+                updateTodayReviews();
+            }
+        }
+
+        // Render Subjects
+        function renderSubjects() {
+            const container = document.getElementById('subjects-list');
+            
+            if (subjects.length === 0) {
+                container.innerHTML = '<div class="empty-state" style="padding: 20px; font-size: 0.9rem;">No subjects yet. Click + to add one!</div>';
+                return;
+            }
+
+            container.innerHTML = subjects.map(subject => {
+                const studied = subject.lectures.filter(l => l.studied).length;
+                const total = subject.lectures.length;
+                const due = subject.lectures.filter(l => l.studied && isReviewDue(l.nextReviewDate)).length;
+                
+                return `
+                    <div class="subject-item ${selectedSubjectId === subject.id ? 'active' : ''}" onclick="selectSubject(${subject.id})">
+                        <button class="delete-subject" onclick="deleteSubject(${subject.id}, event)">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        <div class="subject-name">${subject.name}</div>
+                        <div class="subject-stats">
+                            ${studied}/${total} lectures
+                            ${due > 0 ? `<span style="color: #ff6b6b;">⚠️ ${due} due</span>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Select Subject
+        function selectSubject(id) {
+            selectedSubjectId = id;
+            const subject = subjects.find(s => s.id === id);
+            
+            if (subject) {
+                document.getElementById('no-subject-selected').style.display = 'none';
+                document.getElementById('subject-content').style.display = 'block';
+                document.getElementById('current-subject-name').textContent = subject.name;
+                renderLectures();
+                updateSubjectStats();
+            }
+            
+            renderSubjects();
+            saveData();
+        }
+
+        // Handle Enter key for lecture
+        function handleLectureEnter(event) {
+            if (event.key === 'Enter') {
+                addLecture();
+            }
+        }
+
+        // Add Lecture
+        function addLecture() {
+            const input = document.getElementById('lecture-input');
+            const name = input.value.trim();
+            
+            if (name && selectedSubjectId) {
+                const subject = subjects.find(s => s.id === selectedSubjectId);
+                const newLecture = {
+                    id: Date.now(),
+                    name: name,
+                    studied: false,
+                    reviewCount: 0,
+                    nextReviewDate: null,
+                    lastStudiedDate: null,
+                    addedDate: new Date().toISOString()
+                };
+                
+                subject.lectures.push(newLecture);
+                input.value = '';
+                saveData();
+                renderLectures();
+                updateSubjectStats();
+                updateGlobalStats();
+            }
+        }
+
+        // Calculate next review date
+        function calculateNextReview(currentCount) {
+            const intervals = [1, 3, 7, 14, 30]; // days
+            const daysToAdd = intervals[Math.min(currentCount, intervals.length - 1)];
+            const date = new Date();
+            date.setDate(date.getDate() + daysToAdd);
+            return date.toISOString();
+        }
+
+        // Check if review is due
+        function isReviewDue(dateString) {
+            if (!dateString) return false;
+            return new Date(dateString) <= new Date();
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        // Toggle lecture studied
+        function toggleStudied(lectureId) {
+            const subject = subjects.find(s => s.id === selectedSubjectId);
+            const lecture = subject.lectures.find(l => l.id === lectureId);
+            
+            lecture.studied = !lecture.studied;
+            lecture.lastStudiedDate = lecture.studied ? new Date().toISOString() : null;
+            lecture.nextReviewDate = lecture.studied ? calculateNextReview(0) : null;
+            
+            saveData();
+            renderLectures();
+            updateSubjectStats();
+            updateGlobalStats();
+            updateTodayReviews();
+        }
+
+        // Mark as reviewed
+        function markAsReviewed(lectureId) {
+            const subject = subjects.find(s => s.id === selectedSubjectId);
+            const lecture = subject.lectures.find(l => l.id === lectureId);
+            
+            lecture.reviewCount++;
+            lecture.lastStudiedDate = new Date().toISOString();
+            lecture.nextReviewDate = calculateNextReview(lecture.reviewCount);
+            
+            saveData();
+            renderLectures();
+            updateSubjectStats();
+            updateGlobalStats();
+            updateTodayReviews();
+        }
+
+        // Delete lecture
+        function deleteLecture(lectureId) {
+            if (confirm('Are you sure you want to delete this lecture?')) {
+                const subject = subjects.find(s => s.id === selectedSubjectId);
+                subject.lectures = subject.lectures.filter(l => l.id !== lectureId);
+                saveData();
+                renderLectures();
+                updateSubjectStats();
+                updateGlobalStats();
+                updateTodayReviews();
+            }
+        }
+
+        // Render Lectures
+        function renderLectures() {
+            const subject = subjects.find(s => s.id === selectedSubjectId);
+            const container = document.getElementById('lectures-list');
+            
+            if (!subject || subject.lectures.length === 0) {
+                container.innerHTML = '<div class="empty-state">No lectures yet. Add your first lecture above!</div>';
+                return;
+            }
+
+            container.innerHTML = subject.lectures.map(lecture => {
+                const isDue = lecture.studied && isReviewDue(lecture.nextReviewDate);
+                const classes = ['lecture-item'];
+                if (isDue) classes.push('due');
+                if (lecture.studied) classes.push('completed');
+                
+                return `
+                    <div class="${classes.join(' ')}">
+                        <div class="lecture-header">
+                            <div class="lecture-checkbox ${lecture.studied ? 'checked' : ''}" onclick="toggleStudied(${lecture.id})">
+                                ${lecture.studied ? '<i class="fas fa-check"></i>' : ''}
+                            </div>
+                            <div class="lecture-info">
+                                <div class="lecture-name ${lecture.studied ? 'completed' : ''}">${lecture.name}</div>
+                                <div class="lecture-details">
+                                    <div class="lecture-detail">
+                                        <i class="fas fa-sync-alt"></i>
+                                        <span>Reviews: ${lecture.reviewCount}</span>
+                                    </div>
+                                    ${lecture.lastStudiedDate ? `
+                                    <div class="lecture-detail">
+                                        <i class="fas fa-calendar"></i>
+                                        <span>Last: ${formatDate(lecture.lastStudiedDate)}</span>
+                                    </div>
+                                    ` : ''}
+                                    ${lecture.nextReviewDate ? `
+                                    <div class="lecture-detail">
+                                        <i class="fas fa-bell"></i>
+                                        <span>Next: ${formatDate(lecture.nextReviewDate)}</span>
+                                    </div>
+                                    ` : ''}
+                                </div>
+                            </div>
+                            <div class="lecture-actions">
+                                ${lecture.studied ? `
+                                <button class="action-btn review ${isDue ? 'due' : ''}" onclick="markAsReviewed(${lecture.id})">
+                                    <i class="fas fa-sync-alt"></i> ${isDue ? 'Review Now!' : 'Review'}
+                                </button>
+                                ` : ''}
+                                <button class="action-btn delete" onclick="deleteLecture(${lecture.id})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Update Subject Stats
+        function updateSubjectStats() {
+            const subject = subjects.find(s => s.id === selectedSubjectId);
+            if (!subject) return;
+
+            const total = subject.lectures.length;
+            const studied = subject.lectures.filter(l => l.studied).length;
+            const progress = total > 0 ? Math.round((studied / total) * 100) : 0;
+            const due = subject.lectures.filter(l => l.studied && isReviewDue(l.nextReviewDate)).length;
+
+            document.getElementById('subject-total').textContent = total;
+            document.getElementById('subject-studied').textContent = studied;
+            document.getElementById('subject-progress').textContent = progress + '%';
+            document.getElementById('subject-due').textContent = due;
+        }
+
+        // Update Global Stats
+        function updateGlobalStats() {
+            const totalSubjects = subjects.length;
+            let totalStudied = 0;
+            let totalReviews = 0;
+            let dueToday = 0;
+
+            subjects.forEach(subject => {
+                subject.lectures.forEach(lecture => {
+                    if (lecture.studied) totalStudied++;
+                    totalReviews += lecture.reviewCount;
+                    if (lecture.studied && isReviewDue(lecture.nextReviewDate)) dueToday++;
+                });
+            });
+
+            document.getElementById('total-subjects').textContent = totalSubjects;
+            document.getElementById('total-studied').textContent = totalStudied;
+            document.getElementById('total-reviews').textContent = totalReviews;
+            document.getElementById('due-today').textContent = dueToday;
+        }
+
+        // Update Today's Reviews Section
+        function updateTodayReviews() {
+            const reviewsContainer = document.getElementById('today-reviews');
+            const reviewGrid = document.getElementById('review-grid');
+            const todayCount = document.getElementById('today-count');
+            
+            const dueReviews = [];
+            
+            subjects.forEach(subject => {
+                subject.lectures.forEach(lecture => {
+                    if (lecture.studied && isReviewDue(lecture.nextReviewDate)) {
+                        dueReviews.push({
+                            subjectId: subject.id,
+                            subjectName: subject.name,
+                            lecture: lecture
+                        });
+                    }
+                });
+            });
+
+            if (dueReviews.length === 0) {
+                reviewsContainer.style.display = 'none';
+                return;
+            }
+
+            reviewsContainer.style.display = 'block';
+            todayCount.textContent = dueReviews.length;
+
+            reviewGrid.innerHTML = dueReviews.map(item => `
+                <div class="review-card">
+                    <h3>${item.lecture.name}</h3>
+                    <p><i class="fas fa-book"></i> ${item.subjectName}</p>
+                    <p><i class="fas fa-sync-alt"></i> Review #${item.lecture.reviewCount + 1}</p>
+                    <p><i class="fas fa-calendar"></i> Last studied: ${formatDate(item.lecture.lastStudiedDate)}</p>
+                    <button class="review-btn" onclick="reviewFromCard(${item.subjectId}, ${item.lecture.id})">
+                        Review Now
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // Review from card
+        function reviewFromCard(subjectId, lectureId) {
+            selectSubject(subjectId);
+            setTimeout(() => {
+                markAsReviewed(lectureId);
+            }, 100);
+        }
+
+        // Initialize on load
+        window.onload = function() {
+            loadData();
+        };
+    </script>
+</body>
+</html>
